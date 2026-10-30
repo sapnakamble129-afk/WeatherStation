@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0c1730">
+  <title>WeatherStation Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#"><span class="brand-mark">☼</span><span>Weather<span class="brand-light">Station</span><small>WEATHER INTELLIGENCE</small></span></a>
+      <div class="side-label">WORKSPACE</div>
+      <a class="nav-item active" href="#overview"><span>▦</span> Overview</a>
+      <a class="nav-item" href="#forecast"><span>◷</span> Forecast</a>
+      <a class="nav-item" href="#conditions"><span>◈</span> Conditions</a>
+      <div class="side-bottom">
+        <div class="side-status"><span class="pulse"></span><div><b>Live weather data</b><small>Powered by Open-Meteo</small></div></div>
+        <button id="themeToggle" class="theme-toggle"><span>◐</span> Toggle appearance</button>
+        <div class="sidebar-foot">WEATHERSTATION PRO <span>v2.0</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content" id="overview">
+      <header class="topbar">
+        <div><div class="eyebrow">WEATHER OVERVIEW</div><h1>Good to see you.</h1><p class="muted">Your local conditions, at a glance.</p></div>
+        <div class="top-actions">
+          <form id="searchForm" class="search-box"><span>⌕</span><input id="cityInput" value="Pune" placeholder="Search city..." autocomplete="off" aria-label="Search city"><button type="submit" aria-label="Search">Search</button></form>
+          <button id="refreshBtn" class="icon-button" title="Refresh weather">↻</button>
+          <div class="avatar">WS</div>
+        </div>
+      </header>
+
+      <div id="notice" class="notice" role="status"></div>
+      <section class="hero-weather">
+        <div class="hero-copy"><div class="location-line"><span class="pin">⌖</span><span id="locationName">Pune, India</span><span class="live-pill"><i></i> LIVE</span></div>
+          <div class="date-line" id="currentDate">Loading local time…</div>
+          <div class="temperature-row"><div class="big-temp" id="temperature">--°</div><div class="weather-symbol" id="weatherIcon">☀</div></div>
+          <h2 id="condition">Getting current conditions</h2><p class="hero-feels">Feels like <strong id="feelsLike">--°C</strong> <span class="divider">/</span> H: <span id="todayHigh">--°</span> &nbsp; L: <span id="todayLow">--°</span></p>
+        </div>
+        <div class="hero-art" aria-hidden="true"><div class="sun-glow"></div><div class="cloud cloud-one"></div><div class="cloud cloud-two"></div><div class="cloud cloud-three"></div><div class="art-horizon"></div></div>
+        <div class="hero-footer"><span>◉ &nbsp; Data refreshed <b id="updatedAt">—</b></span><span>Local time zone <b id="timezone">—</b></span></div>
+      </section>
+
+      <section class="metric-grid" id="conditions">
+        <article class="metric-card"><div class="metric-head"><span>Humidity</span><span class="metric-icon blue">≋</span></div><div class="metric-value"><span id="humidity">--</span><small>%</small></div><div class="metric-foot"><span class="mini-bar"><i id="humidityBar"></i></span><span>Relative humidity</span></div></article>
+        <article class="metric-card"><div class="metric-head"><span>Wind speed</span><span class="metric-icon purple">↗</span></div><div class="metric-value"><span id="wind">--</span><small>km/h</small></div><div class="metric-foot"><span id="windDirection">—</span><span>Wind direction</span></div></article>
+        <article class="metric-card"><div class="metric-head"><span>UV index</span><span class="metric-icon orange">☼</span></div><div class="metric-value"><span id="uv">--</span><small>/ 11+</small></div><div class="metric-foot"><span id="uvLabel" class="status-label">—</span><span>Sun exposure</span></div></article>
+        <article class="metric-card"><div class="metric-head"><span>Pressure</span><span class="metric-icon green">⌁</span></div><div class="metric-value"><span id="pressure">--</span><small>hPa</small></div><div class="metric-foot"><span>Sea-level pressure</span><span>Atmospheric</span></div></article>
+        <article class="metric-card"><div class="metric-head"><span>Visibility</span><span class="metric-icon cyan">◉</span></div><div class="metric-value"><span id="visibility">--</span><small>km</small></div><div class="metric-foot"><span id="visibilityLabel">—</span><span>Visual range</span></div></article>
+        <article class="metric-card"><div class="metric-head"><span>Precipitation</span><span class="metric-icon blue">♧</span></div><div class="metric-value"><span id="precipitation">--</span><small>mm</small></div><div class="metric-foot"><span>Current hour</span><span id="rainChance">—</span></div></article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel chart-panel">
+          <div class="panel-heading"><div><div class="eyebrow">NEXT 24 HOURS</div><h3>Temperature outlook</h3></div><div class="chart-legend"><span></span> Temperature <b>°C</b></div></div>
+          <div class="chart-wrap"><canvas id="hourlyChart" aria-label="Hourly temperature chart"></canvas></div>
+          <div class="chart-summary"><span>◷ Hourly forecast</span><span id="chartSummary">Temperature trend for the next 24 hours</span></div>
+        </article>
+        <article class="panel sun-panel">
+          <div class="panel-heading"><div><div class="eyebrow">DAYLIGHT</div><h3>Sunrise & sunset</h3></div><span class="metric-icon orange">☼</span></div>
+          <div class="sun-track"><div class="sunrise-icon">☀</div><div class="sun-arc"></div><div class="sunset-icon">◒</div></div>
+          <div class="sun-times"><div><small>Sunrise</small><b id="sunrise">--:--</b></div><div class="sun-duration"><small>Daylight</small><b id="daylight">—</b></div><div class="align-right"><small>Sunset</small><b id="sunset">--:--</b></div></div>
+          <div class="sun-note"><span>✦</span><span id="sunNote">Today's daylight summary</span></div>
+        </article>
+      </section>
+
+      <section class="panel forecast-panel" id="forecast">
+        <div class="panel-heading"><div><div class="eyebrow">PLAN AHEAD</div><h3>7-day forecast</h3></div><span class="subtle-tag">Daily outlook</span></div>
+        <div id="dailyForecast" class="daily-forecast"><div class="loading-row">Loading forecast…</div></div>
+      </section>
+
+      <section class="bottom-grid">
+        <article class="panel history-panel"><div class="panel-heading"><div><div class="eyebrow">YOUR ACTIVITY</div><h3>Recent searches</h3></div><button id="clearHistory" class="text-button">Clear local history</button></div><div id="historyList" class="history-list"><div class="loading-row">Loading recent searches…</div></div><p class="panel-footnote" id="historySource">Searches are stored in this browser and synced to MongoDB when configured.</p></article>
+        <article class="panel insight-panel"><div class="panel-heading"><div><div class="eyebrow">WEATHER BRIEFING</div><h3>Today's insight</h3></div><span class="metric-icon green">✧</span></div><div class="insight-badge">PERSONALIZED SUMMARY</div><p id="weatherInsight">Your daily weather summary will appear here after the forecast loads.</p><div class="insight-tip"><span>✓</span><span id="weatherTip">Weather tips will appear here.</span></div></article>
+      </section>
+      <footer class="footer"><span>WeatherStation Pro <b>·</b> Built for a clearer view of the day</span><span>Weather data by Open-Meteo</span></footer>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>
